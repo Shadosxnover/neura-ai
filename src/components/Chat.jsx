@@ -111,7 +111,7 @@ export default function Chat() {
       <Sidebar
         chats={Object.values(chats)}
         activeChat={activeChatId}
-        onChatSelect={handleChatSelect}  // Use the new handler
+        onChatSelect={handleChatSelect}
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}
         onEditTitle={handleEditTitle}

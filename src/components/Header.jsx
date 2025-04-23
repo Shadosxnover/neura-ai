@@ -25,11 +25,7 @@ export default function Header() {
               <HomeIcon size={20} />
               <span>Home</span>
             </Link>
-            <Link to="/about" className="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded-lg hover:bg-gray-800">
-              <InfoIcon size={20} />
-              <span>About</span>
-            </Link>
-            <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded-lg hover:bg-gray-800">
+            <a href="https://github.com/Shadosxnover" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded-lg hover:bg-gray-800">
               <Terminal size={20} />
               <span>GitHub</span>
             </a>
