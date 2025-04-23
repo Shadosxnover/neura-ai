@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { generateResponse } from '../utils/gemini';
 import { saveChat, getChats, getChatMessages, deleteChat } from '../utils/chatStorage';
 import Sidebar from './Sidebar';
+import { Menu } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import DeleteConfirmation from './DeleteConfirmation';
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
@@ -10,7 +13,11 @@ export default function Chat() {
   const [loading, setLoading] = useState(false);
   const [activeChatId, setActiveChatId] = useState(null);
   const [chats, setChats] = useState(getChats());
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
+  const { chatId } = useParams();
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     setChats(getChats());
@@ -27,8 +34,15 @@ export default function Chat() {
     }
   }, [activeChatId]);
 
+  useEffect(() => {
+    if (chatId && chats[chatId]) {
+      handleChatSelect(chatId);
+    }
+  }, [chatId]);
+
   const handleChatSelect = (chatId) => {
     setActiveChatId(chatId);
+    navigate(`/chat/${chatId}`);
     const selectedMessages = getChatMessages(chatId);
     setMessages(selectedMessages);
     setInput('');
@@ -49,11 +63,13 @@ export default function Chat() {
   };
 
   const handleDeleteChat = (chatId) => {
+    setDeleteTarget(null);
     deleteChat(chatId);
     setChats(getChats());
     if (activeChatId === chatId) {
       setActiveChatId(null);
       setMessages([]);
+      navigate('/chat');
     }
   };
 
@@ -107,16 +123,38 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex min-h-screen bg-black">
-      <Sidebar
-        chats={Object.values(chats)}
-        activeChat={activeChatId}
-        onChatSelect={handleChatSelect}
-        onNewChat={handleNewChat}
-        onDeleteChat={handleDeleteChat}
-        onEditTitle={handleEditTitle}
-      />
-      
+    <div className="flex min-h-screen bg-black overflow-hidden">
+      {/* Mobile Menu Button */}
+      <button 
+        onClick={() => setSidebarOpen(!isSidebarOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-black border border-white/20 rounded-lg text-white"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Sidebar with mobile responsiveness */}
+      <div className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 lg:relative fixed inset-y-0 left-0 z-40`}>
+        <Sidebar
+          chats={Object.values(chats)}
+          activeChat={activeChatId}
+          onChatSelect={(chatId) => {
+            handleChatSelect(chatId);
+            setSidebarOpen(false);
+          }}
+          onNewChat={handleNewChat}
+          onDeleteChat={handleDeleteChat}
+          onEditTitle={handleEditTitle}
+        />
+      </div>
+
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       <div className="flex-1 flex flex-col">
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {messages.length === 0 ? (
@@ -190,6 +228,11 @@ export default function Chat() {
           </div>
         )}
       </div>
+      <DeleteConfirmation
+        isOpen={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => handleDeleteChat(deleteTarget)}
+      />
     </div>
   );
 }

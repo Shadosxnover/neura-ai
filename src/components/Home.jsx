@@ -18,6 +18,8 @@ export default function Home() {
       canvas.height = window.innerHeight;
     };
 
+    const isMobile = window.innerWidth < 768;
+    
     const handleMouseMove = (e) => {
       mouseRef.current = {
         x: e.clientX,
@@ -29,15 +31,18 @@ export default function Home() {
     window.addEventListener('resize', updateCanvasSize);
     window.addEventListener('mousemove', handleMouseMove);
     
-    const nodeCount = 45;
+    const nodeCount = isMobile ? 20 : 45; // Reduce nodes for mobile
+    const connectionCount = isMobile ? 3 : 5; // Reduce connections for mobile
+    const connectionDistance = isMobile ? 250 : 350; // Reduce connection distance for mobile
+    
     nodesRef.current = Array.from({ length: nodeCount }, (_, i) => ({
       id: i,
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.5, // Increased base speed
-      vy: (Math.random() - 0.5) * 0.5, // Increased base speed
+      vx: (Math.random() - 0.5) * (isMobile ? 0.3 : 0.5), // Reduce speed for mobile
+      vy: (Math.random() - 0.5) * (isMobile ? 0.3 : 0.5), // Reduce speed for mobile
       connections: Array.from(
-        { length: Math.floor(Math.random() * 5) + 6 }, 
+        { length: Math.floor(Math.random() * connectionCount) + 3 }, 
         () => Math.floor(Math.random() * nodeCount)
       ).filter(idx => idx !== i)
     }));
@@ -83,8 +88,8 @@ export default function Home() {
           const dy = target.y - node.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < 350) {
-            const opacity = 1 - distance / 350;
+          if (distance < connectionDistance) { // Use responsive connection distance
+            const opacity = 1 - distance / connectionDistance;
             
             ctx.beginPath();
             ctx.moveTo(node.x, node.y);
