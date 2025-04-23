@@ -21,7 +21,7 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
     <motion.div 
       initial={{ x: -300 }}
       animate={{ x: 0 }}
-      className="w-96 h-screen bg-black border-r border-gray-800 p-6 overflow-y-auto"
+      className="w-96 h-screen bg-black border-r border-gray-700 p-6 overflow-y-auto"
     >
       <div className="flex items-center gap-3 mb-8">
         <Brain size={32} className="text-white" />
@@ -45,10 +45,10 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
             key={chat.id}
             whileHover={{ scale: 1.02 }}
             onClick={() => onChatSelect(chat.id)}
-            className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+            className={`group p-4 rounded-xl cursor-pointer transition-all duration-200 ${
               chat.id === activeChat 
                 ? 'bg-white text-black' 
-                : 'bg-gray-900 text-white hover:bg-gray-800'
+                : 'bg-black text-white border border-white/20 hover:border-white/40'
             }`}
           >
             {editingId === chat.id ? (
@@ -57,7 +57,7 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
                   type="text"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
-                  className="flex-1 bg-gray-900 rounded-lg px-4 py-2 text-white text-lg border-2 border-gray-700 focus:border-white"
+                  className="flex-1 bg-black rounded-lg px-4 py-2 text-white text-lg border-2 border-white/20 focus:border-white"
                   onKeyDown={(e) => e.key === 'Enter' && handleSubmitEdit(chat.id)}
                   autoFocus
                 />
@@ -73,13 +73,17 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
                 <p className="text-lg truncate flex-1">
                   {chat.title}
                 </p>
-                <div className="flex gap-2 opacity-0 group-hover:opacity-100" onClick={e => e.stopPropagation()}>
+                <div className="flex gap-2 invisible group-hover:visible" onClick={e => e.stopPropagation()}>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleStartEdit(chat);
                     }}
-                    className="p-2 rounded-lg transition-all hover:bg-gray-700"
+                    className={`p-2 rounded-lg transition-all ${
+                      chat.id === activeChat
+                        ? 'text-black hover:bg-black/10'
+                        : 'text-white/70 hover:text-white hover:bg-white/10'
+                    }`}
                   >
                     <Edit3 size={20} />
                   </button>
@@ -90,7 +94,11 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
                         onDeleteChat(chat.id);
                       }
                     }}
-                    className="p-2 rounded-lg transition-all hover:bg-gray-700 text-red-400 hover:text-red-300"
+                    className={`p-2 rounded-lg transition-all ${
+                      chat.id === activeChat
+                        ? 'text-black hover:bg-black/10'
+                        : 'text-white/70 hover:text-white hover:bg-white/10'
+                    }`}
                   >
                     <Trash2 size={20} />
                   </button>

@@ -128,7 +128,7 @@ export default function Chat() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Start a new conversation..."
-                    className="w-full p-6 rounded-2xl bg-gray-900 text-white border-2 border-gray-800 focus:border-white transition-colors text-lg placeholder:text-gray-500"
+                    className="w-full p-6 rounded-2xl bg-black text-white border-2 border-white/20 focus:border-white transition-colors text-lg placeholder:text-gray-500"
                   />
                   <button
                     type="submit"
@@ -152,7 +152,7 @@ export default function Chat() {
                   <div className={`max-w-[80%] rounded-2xl p-4 ${
                     message.role === 'user' 
                       ? 'bg-white text-black' 
-                      : 'bg-gray-900 text-white border border-gray-800'
+                      : 'bg-black text-white border border-white/20'
                   }`}>
                     <p className="text-lg">{message.content}</p>
                   </div>
@@ -160,7 +160,7 @@ export default function Chat() {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-gray-900 text-white rounded-2xl p-4 border border-gray-800">
+                  <div className="bg-black text-white rounded-2xl p-4 border border-white/20">
                     <p className="text-lg">Thinking...</p>
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export default function Chat() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 p-4 rounded-xl bg-gray-900 text-white border-2 border-gray-800 focus:border-white transition-colors text-lg placeholder:text-gray-500"
+                className="flex-1 p-4 rounded-xl bg-black text-white border-2 border-white/20 focus:border-white transition-colors text-lg placeholder:text-gray-500"
               />
               <button
                 type="submit"
