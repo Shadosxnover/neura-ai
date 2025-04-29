@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 import { generateResponse } from '../utils/gemini';
 import { saveChat, getChats, getChatMessages, deleteChat } from '../utils/chatStorage';
 import Sidebar from './Sidebar';
@@ -185,7 +186,15 @@ export default function Chat() {
                       ? 'bg-white text-black' 
                       : 'bg-black text-white border border-white/20'
                   }`}>
-                    <p className="text-lg">{message.content}</p>
+                    {message.role === 'assistant' ? (
+                      <div className="prose prose-invert max-w-none">
+                        <ReactMarkdown>
+                          {message.content}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-lg">{message.content}</p>
+                    )}
                   </div>
                 </motion.div>
               ))}
