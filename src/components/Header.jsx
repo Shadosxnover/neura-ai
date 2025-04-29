@@ -1,37 +1,44 @@
-import { Link } from 'react-router-dom';
-import { HomeIcon, Brain, Terminal, InfoIcon } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
+import { Brain, Github, Key, House } from 'lucide-react';
 
-export default function Header() {
+export default function Header({ onApiKeyClick }) {
+  const location = useLocation();
+
   return (
-    <motion.header 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 bg-black/80 backdrop-blur-md z-50 border-b border-gray-800"
-    >
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center space-x-3">
-            <Brain size={32} className="text-white" />
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold text-white tracking-tight">
-                Neura AI
-              </span>
-            </div>
+    <header className="fixed top-0 left-0 right-0 z-40 flex justify-center bg-black/50 backdrop-blur-md">
+      <div className="container flex items-center justify-between p-4">
+        <Link to="/" className="flex items-center gap-2">
+          <Brain size={32} className="text-white" />
+          <span className="font-bold text-white text-xl">Neura AI</span>
+        </Link>
+        
+        <nav className="flex items-center gap-6">
+          <Link 
+            to="/" 
+            className={`text-sm font-medium ${location.pathname === '/' ? 'text-white' : 'text-white/70 hover:text-white'}`}
+          >
+            Home
           </Link>
-          
-          <nav className="flex items-center space-x-6">
-            <Link to="/" className="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded-lg hover:bg-gray-800">
-              <HomeIcon size={20} />
-              <span>Home</span>
-            </Link>
-            <a href="https://github.com/Shadosxnover" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded-lg hover:bg-gray-800">
-              <Terminal size={20} />
-              <span>GitHub</span>
-            </a>
-          </nav>
-        </div>
+          <a 
+            href="https://aistudio.google.com/welcome" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-white/70 hover:text-white"
+          >
+            <Key size={18} />
+            <span className="text-sm font-medium">Get API key</span>
+          </a>
+          <a 
+            href="https://github.com/Shadosxnover/neura-ai" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-white/70 hover:text-white"
+          >
+            <Github size={18} />
+            <span className="text-sm font-medium">My GitHub</span>
+          </a>
+        </nav>
       </div>
-    </motion.header>
+    </header>
   );
 }

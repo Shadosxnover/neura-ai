@@ -68,7 +68,7 @@ export default function Chat() {
     setChats(getChats());
     if (activeChatId === chatId) {
       setActiveChatId(null);
-      setMessages([]);
+      setMessages([]) ;
       navigate('/chat');
     }
   };
@@ -122,8 +122,14 @@ export default function Chat() {
     }
   };
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
-    <div className="flex min-h-screen bg-black overflow-hidden">
+    <div className="flex h-screen bg-black">
       {/* Mobile Menu Button */}
       <button 
         onClick={() => setSidebarOpen(!isSidebarOpen)}
@@ -132,8 +138,8 @@ export default function Chat() {
         <Menu size={24} />
       </button>
 
-      {/* Sidebar with mobile responsiveness */}
-      <div className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 lg:relative fixed inset-y-0 left-0 z-40`}>
+      {/* Sidebar - remove scroll from sidebar container */}
+      <div className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 lg:relative fixed inset-y-0 left-0 z-40 h-screen`}>
         <Sidebar
           chats={Object.values(chats)}
           activeChat={activeChatId}
@@ -142,21 +148,49 @@ export default function Chat() {
             setSidebarOpen(false);
           }}
           onNewChat={handleNewChat}
-          onDeleteChat={handleDeleteChat}
+          onDeleteChat={(id) => setDeleteTarget(id)}
           onEditTitle={handleEditTitle}
         />
       </div>
 
-      {/* Overlay for mobile */}
-      {isSidebarOpen && (
+      {/* Main chat area */}
+      <div className="flex-1 flex flex-col h-screen relative">
+        {/* Messages container - scrollable area */}
         <div 
-          className="lg:hidden fixed inset-0 bg-black/50 z-30"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+          ref={messagesEndRef}
+          className="absolute inset-0 bottom-[100px] overflow-y-auto custom-scrollbar"
+        >
+          <div className="flex flex-col justify-end min-h-full p-6">
+            <div className="flex flex-col">
+              {messages.map((message) => (
+                <motion.div
+                  key={message.timestamp}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex mb-6 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`max-w-[80%] rounded-2xl p-4 ${
+                    message.role === 'user' 
+                      ? 'bg-white text-black' 
+                      : 'bg-black text-white border border-white/20'
+                  }`}>
+                    <p className="text-lg">{message.content}</p>
+                  </div>
+                </motion.div>
+              ))}
+              {loading && (
+                <div className="flex justify-start mb-6">
+                  <div className="bg-black text-white rounded-2xl p-4 border border-white/20">
+                    <p className="text-lg">Thinking...</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* Input container - fixed at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 bg-black border-t border-white/10 p-6">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center">
               <div className="max-w-xl w-full p-8">
@@ -179,36 +213,6 @@ export default function Chat() {
               </div>
             </div>
           ) : (
-            <>
-              {messages.map((message) => (
-                <motion.div
-                  key={message.timestamp}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div className={`max-w-[80%] rounded-2xl p-4 ${
-                    message.role === 'user' 
-                      ? 'bg-white text-black' 
-                      : 'bg-black text-white border border-white/20'
-                  }`}>
-                    <p className="text-lg">{message.content}</p>
-                  </div>
-                </motion.div>
-              ))}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-black text-white rounded-2xl p-4 border border-white/20">
-                    <p className="text-lg">Thinking...</p>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {messages.length > 0 && (
-          <div className="p-6">
             <form onSubmit={handleSubmit} className="flex gap-4">
               <input
                 type="text"
@@ -225,9 +229,10 @@ export default function Chat() {
                 Send
               </button>
             </form>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
       <DeleteConfirmation
         isOpen={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
