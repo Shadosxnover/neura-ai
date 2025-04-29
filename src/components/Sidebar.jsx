@@ -42,7 +42,7 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
       </button>
       
       <div className="space-y-3">
-        {chats.map((chat) => (
+        {[...chats].reverse().map((chat) => (
           <motion.div
             key={chat.id}
             whileHover={{ scale: 1.02 }}

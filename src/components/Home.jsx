@@ -31,16 +31,16 @@ export default function Home() {
     window.addEventListener('resize', updateCanvasSize);
     window.addEventListener('mousemove', handleMouseMove);
     
-    const nodeCount = isMobile ? 20 : 45; // Reduce nodes for mobile
-    const connectionCount = isMobile ? 3 : 5; // Reduce connections for mobile
-    const connectionDistance = isMobile ? 250 : 350; // Reduce connection distance for mobile
+    const nodeCount = isMobile ? 20 : 45;
+    const connectionCount = isMobile ? 3 : 5;
+    const connectionDistance = isMobile ? 250 : 350;
     
     nodesRef.current = Array.from({ length: nodeCount }, (_, i) => ({
       id: i,
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * (isMobile ? 0.3 : 0.5), // Reduce speed for mobile
-      vy: (Math.random() - 0.5) * (isMobile ? 0.3 : 0.5), // Reduce speed for mobile
+      vx: (Math.random() - 0.5) * (isMobile ? 0.3 : 0.5),
+      vy: (Math.random() - 0.5) * (isMobile ? 0.3 : 0.5),
       connections: Array.from(
         { length: Math.floor(Math.random() * connectionCount) + 3 }, 
         () => Math.floor(Math.random() * nodeCount)
@@ -61,14 +61,12 @@ export default function Home() {
           node.vy += dy * force;
         }
 
-        // Apply velocity with speed limits
         node.vx = Math.max(Math.min(node.vx, 2), -2);
         node.vy = Math.max(Math.min(node.vy, 2), -2);
         
         node.x += node.vx;
         node.y += node.vy;
         
-        // Bounce off edges with some damping
         if (node.x <= 0 || node.x >= canvas.width) {
           node.vx *= -0.8;
           node.x = Math.max(0, Math.min(node.x, canvas.width));
@@ -78,7 +76,6 @@ export default function Home() {
           node.y = Math.max(0, Math.min(node.y, canvas.height));
         }
 
-        // Gradually restore original speed
         node.vx *= 0.99;
         node.vy *= 0.99;
         
@@ -88,7 +85,7 @@ export default function Home() {
           const dy = target.y - node.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < connectionDistance) { // Use responsive connection distance
+          if (distance < connectionDistance) {
             const opacity = 1 - distance / connectionDistance;
             
             ctx.beginPath();
@@ -138,7 +135,6 @@ export default function Home() {
     <div className="min-h-screen bg-black flex items-center justify-center relative overflow-hidden">
       <canvas ref={canvasRef} className="fixed inset-0 z-0" />
 
-      {/* Content */}
       <motion.div 
         className="text-center space-y-8 z-10"
         initial={{ opacity: 0, y: 20 }}

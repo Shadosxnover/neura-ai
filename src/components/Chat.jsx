@@ -98,6 +98,10 @@ export default function Chat() {
       setInput('');
       setChats(getChats());
 
+      if (!import.meta.env.VITE_GEMINI_API_KEY) {
+        throw new Error('API key not found. Please add your Gemini API key to the .env file as VITE_GEMINI_API_KEY.');
+      }
+
       const response = await generateResponse(input.trim());
       const aiMessage = { 
         role: 'assistant', 
@@ -112,11 +116,20 @@ export default function Chat() {
 
     } catch (error) {
       console.error('Chat error:', error);
-      setMessages(prev => [...prev, { 
-        role: 'error', 
-        content: `Error: ${error.message || 'Failed to generate response'}`, 
-        timestamp: Date.now() 
-      }]);
+      
+      if (error.message.includes('API key not found')) {
+        setMessages(prev => [...prev, { 
+          role: 'error', 
+          content: 'API key not found. Please add your Gemini API key to the .env file as VITE_GEMINI_API_KEY.',
+          timestamp: Date.now() 
+        }]);
+      } else {
+        setMessages(prev => [...prev, { 
+          role: 'error', 
+          content: `Error: ${error.message || 'Failed to generate response'}`, 
+          timestamp: Date.now() 
+        }]);
+      }
     } finally {
       setLoading(false);
     }
@@ -130,7 +143,6 @@ export default function Chat() {
 
   return (
     <div className="flex h-screen bg-black">
-      {/* Mobile Menu Button */}
       <button 
         onClick={() => setSidebarOpen(!isSidebarOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-black border border-white/20 rounded-lg text-white"
@@ -138,7 +150,6 @@ export default function Chat() {
         <Menu size={24} />
       </button>
 
-      {/* Sidebar - remove scroll from sidebar container */}
       <div className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 lg:relative fixed inset-y-0 left-0 z-40 h-screen`}>
         <Sidebar
           chats={Object.values(chats)}
@@ -153,9 +164,7 @@ export default function Chat() {
         />
       </div>
 
-      {/* Main chat area */}
       <div className="flex-1 flex flex-col h-screen relative">
-        {/* Messages container - scrollable area */}
         <div 
           ref={messagesEndRef}
           className="absolute inset-0 bottom-[100px] overflow-y-auto custom-scrollbar"
@@ -189,7 +198,6 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* Input container - fixed at bottom */}
         <div className="absolute bottom-0 left-0 right-0 bg-black border-t border-white/10 p-6">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center">
