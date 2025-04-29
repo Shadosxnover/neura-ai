@@ -52,6 +52,7 @@ export default function Chat() {
     setActiveChatId(null);
     setMessages([]);
     setInput('');
+    navigate('/chat');
   };
 
   const handleEditTitle = (chatId, newTitle) => {
@@ -88,6 +89,7 @@ export default function Chat() {
         currentChatId = `chat_${timestamp}`;
         updatedMessages = [newMessage];
         setActiveChatId(currentChatId);
+        navigate(`/chat/${currentChatId}`);
         saveChat(currentChatId, input.trim().slice(0, 30) + '...', updatedMessages);
       } else {
         updatedMessages = [...messages, newMessage];

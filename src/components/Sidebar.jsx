@@ -35,7 +35,7 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
 
       <button
         onClick={onNewChat}
-        className="w-full bg-white text-black p-4 rounded-xl hover:bg-gray-100 transition-colors mb-6 flex items-center justify-center gap-2 text-lg font-medium"
+        className="w-full bg-white text-black p-4 rounded-xl hover:bg-gray-100 transition-colors mb-6 flex items-center justify-center gap-2 text-lg font-medium cursor-pointer"
       >
         <MessageSquarePlus size={24} />
         <span>New Chat</span>
@@ -63,10 +63,10 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
                   onKeyDown={(e) => e.key === 'Enter' && handleSubmitEdit(chat.id)}
                   autoFocus
                 />
-                <button onClick={() => handleSubmitEdit(chat.id)}>
+                <button onClick={() => handleSubmitEdit(chat.id)} className="cursor-pointer">
                   <Check size={20} />
                 </button>
-                <button onClick={() => setEditingId(null)}>
+                <button onClick={() => setEditingId(null)} className="cursor-pointer">
                   <X size={20} />
                 </button>
               </div>
@@ -81,7 +81,7 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
                       e.stopPropagation();
                       handleStartEdit(chat);
                     }}
-                    className={`p-2 rounded-lg transition-all ${
+                    className={`p-2 rounded-lg transition-all cursor-pointer ${
                       chat.id === activeChat
                         ? 'text-black hover:bg-black/10'
                         : 'text-white/70 hover:text-white hover:bg-white/10'
@@ -94,7 +94,7 @@ export default function Sidebar({ chats, activeChat, onChatSelect, onNewChat, on
                       e.stopPropagation();
                       onDeleteChat(chat.id);
                     }}
-                    className={`p-2 rounded-lg transition-all ${
+                    className={`p-2 rounded-lg transition-all cursor-pointer ${
                       chat.id === activeChat
                         ? 'text-black hover:bg-black/10'
                         : 'text-white/70 hover:text-white hover:bg-white/10'
